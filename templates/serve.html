@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>New Orders</title>
+    <link rel="stylesheet" href="serve.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+</head>
+<body>
+    <div id="preloader"></div>
+    <h1>New Orders</h1>
+    <table id="order-table">
+        <thead>
+            <tr>
+                <th>Room</th>
+                <th>Date Ordered</th>
+                <th>Price</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Existing and new orders will be displayed here -->
+        </tbody>
+    </table>
+
+</body>
+<script>
+    // Initial load of new orders
+       
+           
+           function getNewOrders() {
+               $.ajax({
+                   url: '/get_new_orders/', // Replace with your own URL
+                   type: 'GET',
+                   dataType: 'json',
+                   success: function(response) {
+                       if (response.status === 'success') {
+                           // Clear the table
+                           $('#order-table tbody').empty();
+                           // Add the new orders to the table
+                           $.each(response.data, function(index, order) {
+                               var row = $('<tr>');
+                               $('<td>').text(order.room).appendTo(row);
+                               $('<td>').text(order.date_ordered).appendTo(row);
+                               $('<td>').text(order.price).appendTo(row);
+                               $('<td>').text(order.items).appendTo(row);
+                               $('#order-table tbody').append(row);
+                           });
+                       } else {
+                           console.log(response.message);
+                       }
+                   },
+                   error: function(xhr, status, error) {
+                       console.log(error);
+                   }
+               });
+           }
+   
+   
+           // Refresh the table every 10 seconds
+           setInterval(getNewOrders, 1000);
+           // Refresh the table every 10 seconds
+            //Refresh the page
+     //  var loader = document.getElementById("preloader");
+   
+      setTimeout(() => { 
+        var loader = document.getElementById("preloader");
+        loader.style.display="none";
+       },5000);
+       
+       </script>
